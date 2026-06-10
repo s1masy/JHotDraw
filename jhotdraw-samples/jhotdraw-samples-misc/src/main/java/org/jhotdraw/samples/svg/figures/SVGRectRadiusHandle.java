@@ -11,7 +11,6 @@ import org.jhotdraw.draw.figure.Figure;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.*;
-import org.jhotdraw.draw.*;
 import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 import org.jhotdraw.draw.event.CompositeFigureEdit;
 import org.jhotdraw.draw.handle.AbstractHandle;
@@ -29,7 +28,7 @@ import org.jhotdraw.util.*;
 public class SVGRectRadiusHandle extends AbstractHandle {
 
     private static final boolean DEBUG = false;
-    private static final int OFFSET = 6;
+    private static final String DRAW_LABELS = "org.jhotdraw.draw.Labels";
     private Dimension2DDouble originalArc2D;
 
     /**
@@ -107,7 +106,7 @@ public class SVGRectRadiusHandle extends AbstractHandle {
         final Dimension2DDouble oldValue = originalArc2D;
         final Dimension2DDouble newValue = new Dimension2DDouble(svgRect.getArcWidth(), svgRect.getArcHeight());
         ResourceBundleUtil labels
-                = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
+                = ResourceBundleUtil.getBundle(DRAW_LABELS);
         CompositeFigureEdit edit = new CompositeFigureEdit(svgRect, labels.getString("attribute.roundRectRadius"));
         edit.setVerbose(true);
         fireUndoableEditHappened(edit);
@@ -142,13 +141,15 @@ public class SVGRectRadiusHandle extends AbstractHandle {
                 newArc.width = Math.min(owner.getWidth(), newArc.width + 1);
                 evt.consume();
                 break;
+            default:
+                break;
         }
         if (!newArc.equals(oldArc)) {
             owner.willChange();
             owner.setArc(newArc.width, newArc.height);
             owner.changed();
             ResourceBundleUtil labels
-                    = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
+                    = ResourceBundleUtil.getBundle(DRAW_LABELS);
             CompositeFigureEdit edit = new CompositeFigureEdit(owner, labels.getString("attribute.roundRectRadius"));
             fireUndoableEditHappened(edit);
             fireUndoableEditHappened(new PropertyChangeEdit(owner, SVGRectFigure.ARC_WIDTH_PROPERTY, oldArc.width, newArc.width));
@@ -159,7 +160,7 @@ public class SVGRectRadiusHandle extends AbstractHandle {
 
     @Override
     public String getToolTipText(Point p) {
-        return ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels").
+        return ResourceBundleUtil.getBundle(DRAW_LABELS).
                 getString("handle.roundRectangleRadius.toolTipText");
     }
 }
