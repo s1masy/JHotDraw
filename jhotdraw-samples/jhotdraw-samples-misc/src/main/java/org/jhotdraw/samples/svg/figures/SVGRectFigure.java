@@ -292,18 +292,16 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
             setBounds(
                     (Point2D.Double) tx.transform(anchor, anchor),
                     (Point2D.Double) tx.transform(lead, lead));
-            if (get(FILL_GRADIENT) != null
-                    && !get(FILL_GRADIENT).isRelativeToFigureBounds()) {
-                Gradient g = FILL_GRADIENT.getClone(this);
-                g.transform(tx);
-                set(FILL_GRADIENT, g);
-            }
-            if (get(STROKE_GRADIENT) != null
-                    && !get(STROKE_GRADIENT).isRelativeToFigureBounds()) {
-                Gradient g = STROKE_GRADIENT.getClone(this);
-                g.transform(tx);
-                set(STROKE_GRADIENT, g);
-            }
+            transformGradientIfNeeded(FILL_GRADIENT, tx);
+            transformGradientIfNeeded(STROKE_GRADIENT, tx);
+        }
+    }
+
+    private void transformGradientIfNeeded(AttributeKey<Gradient> key, AffineTransform tx) {
+        if (get(key) != null && !get(key).isRelativeToFigureBounds()) {
+            Gradient g = key.getClone(this);
+            g.transform(tx);
+            set(key, g);
         }
     }
 
